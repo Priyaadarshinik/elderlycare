@@ -85,6 +85,11 @@ The Social Engagement Agent fosters communication among stakeholders.
 
 ![image](https://github.com/user-attachments/assets/d6397f6b-dc13-4fda-adb6-b13f29037808)
 
+# Sample Dashboard
+
+![image](https://github.com/user-attachments/assets/8d49ba0f-78cb-4ad7-b0c8-6a53c39178bb)
+
+
 # Conclusion
 
 Our Multi-Agent AI System revolutionizes elderly care by combining intelligent monitoring, proactive support, and seamless collaboration. It tackles key challenges like missed medications, unnoticed emergencies, and social isolation with a smart, responsive network of AI agents. The solution empowers seniors to live independently and confidently, while offering caregivers timely insights and alerts. This holistic approach not only enhances safety and well-being but also redefines what it means to age with dignity in the digital era.
