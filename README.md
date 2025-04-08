@@ -87,7 +87,6 @@ The Social Engagement Agent fosters communication among stakeholders.
 ```
 import streamlit as st
 import pandas as pd
-
 import plotly.express as px
 
 # Load datasets
@@ -98,10 +97,16 @@ reminder_df = pd.read_csv("daily_reminder.csv")
 # Page config
 st.set_page_config(page_title="Elderly Care AI Dashboard", layout="wide")
 st.title("👵 Elderly Care AI Dashboard")
+st.markdown("""
+    <style>
+    .main {background-color: #f5f7fa;}
+    .css-18e3th9 {background-color: #f5f7fa;}
+    </style>
+    """, unsafe_allow_html=True)
 st.markdown("Real-time Monitoring & Insights")
 
 # Tabs for categories
-tabs = st.tabs(["🩺 Health Stats", "🛡 Safety Monitoring", "⏰ Daily Reminders"])
+tabs = st.tabs(["🩺 Health Stats", "🛡 Safety Monitoring", "⏰ Daily Reminders", "📢 Alerts & Notifications"])
 
 # --- HEALTH TAB --- #
 with tabs[0]:
@@ -109,13 +114,13 @@ with tabs[0]:
     st.dataframe(health_df.head())
 
     # Heart Rate Trend
-    fig_hr = px.line(health_df, x="Timestamp", y="Heart Rate", title="Heart Rate Over Time",
+    fig_hr = px.line(health_df, x="Timestamp", y="Heart Rate", title="💓 Heart Rate Over Time",
                      color="Device-ID/User-ID")
     st.plotly_chart(fig_hr, use_container_width=True)
 
     # Glucose Levels
     fig_gl = px.bar(health_df, x="Device-ID/User-ID", y="Glucose Levels",
-                   title="Current Glucose Levels by User",
+                   title="🩸 Current Glucose Levels by User",
                    color="Glucose Levels Below/Above Threshold (Yes/No)")
     st.plotly_chart(fig_gl, use_container_width=True)
 
@@ -126,11 +131,11 @@ with tabs[1]:
 
     fall_counts = safety_df["Fall Detected (Yes/No)"].value_counts().reset_index()
     fall_counts.columns = ["Fall Detected", "Count"]
-    fig_falls = px.pie(fall_counts, names="Fall Detected", values="Count", title="Fall Detection Summary")
+    fig_falls = px.pie(fall_counts, names="Fall Detected", values="Count", title="🧍‍♀️ Fall Detection Summary")
     st.plotly_chart(fig_falls, use_container_width=True)
 
     location_chart = px.histogram(safety_df, x="Location", color="Fall Detected (Yes/No)",
-                                  title="Fall Events by Location")
+                                  title="📍 Fall Events by Location")
     st.plotly_chart(location_chart, use_container_width=True)
 
 # --- REMINDERS TAB --- #
@@ -140,20 +145,43 @@ with tabs[2]:
 
     reminder_types = reminder_df["Reminder Type"].value_counts().reset_index()
     reminder_types.columns = ["Reminder Type", "Count"]
-    fig_reminders = px.bar(reminder_types, x="Reminder Type", y="Count", title="Reminder Types Frequency",
+    fig_reminders = px.bar(reminder_types, x="Reminder Type", y="Count", title="🔔 Reminder Types Frequency",
                            color="Reminder Type")
     st.plotly_chart(fig_reminders, use_container_width=True)
 
     ack_chart = reminder_df["Acknowledged (Yes/No)"].value_counts().reset_index()
     ack_chart.columns = ["Acknowledged", "Count"]
-    fig_ack = px.pie(ack_chart, names="Acknowledged", values="Count", title="Acknowledgement Status")
+    fig_ack = px.pie(ack_chart, names="Acknowledged", values="Count", title="✅ Acknowledgement Status")
     st.plotly_chart(fig_ack, use_container_width=True)
+
+# --- ALERTS & NOTIFICATIONS TAB --- #
+with tabs[3]:
+    st.subheader("📢 Real-Time Alerts & Family Notifications")
+
+    # Define alert condition
+    safety_df["Alert Triggered"] = ((safety_df["Fall Detected (Yes/No)"] == "Yes") |
+                                     (safety_df["Post-Fall Inactivity Duration (Seconds)"] > 300))
+    alerts_df = safety_df[safety_df["Alert Triggered"] == True]
+
+    if not alerts_df.empty:
+        st.warning("⚠️ Critical Alerts Detected! Immediate action required!")
+        st.dataframe(alerts_df, use_container_width=True)
+
+        st.markdown("""
+        ### 👨‍👩‍👧 Family Notification
+        - 🛑 Family members have been notified via registered contacts.
+        - 👩‍⚕️ Caregivers alerted through app dashboard.
+        - 🔁 Emergency protocols auto-initiated.
+        """)
+    else:
+        st.success("✅ No critical alerts. Everything looks good.")
+
 
 ```
 
 # Sample Dashboard
 
-![image](https://github.com/user-attachments/assets/8d49ba0f-78cb-4ad7-b0c8-6a53c39178bb)
+[elderlycare.webm](https://github.com/user-attachments/assets/bbcabdd0-def6-4a2b-b3a7-1d886e25bf86)
 
 
 # Conclusion
