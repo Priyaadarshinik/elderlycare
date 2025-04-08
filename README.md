@@ -1,4 +1,4 @@
-# elderlycare
+# Empowering Elderly care with multiagent framework
 # SAGE: Smart Agent Grid for Elderly Care!
 Problem statement you are trying to address 
 Empowering Elderly Care with Multi-Agent AI System
@@ -84,6 +84,72 @@ The Social Engagement Agent fosters communication among stakeholders.
 ![image](https://github.com/user-attachments/assets/3c429cce-a86a-46d0-a65e-c59f70d987ca)
 
 ![image](https://github.com/user-attachments/assets/d6397f6b-dc13-4fda-adb6-b13f29037808)
+```
+import streamlit as st
+import pandas as pd
+
+import plotly.express as px
+
+# Load datasets
+health_df = pd.read_csv("health_monitoring.csv")
+safety_df = pd.read_csv("safety_monitoring.csv")
+reminder_df = pd.read_csv("daily_reminder.csv")
+
+# Page config
+st.set_page_config(page_title="Elderly Care AI Dashboard", layout="wide")
+st.title("👵 Elderly Care AI Dashboard")
+st.markdown("Real-time Monitoring & Insights")
+
+# Tabs for categories
+tabs = st.tabs(["🩺 Health Stats", "🛡 Safety Monitoring", "⏰ Daily Reminders"])
+
+# --- HEALTH TAB --- #
+with tabs[0]:
+    st.subheader("Vital Signs Overview")
+    st.dataframe(health_df.head())
+
+    # Heart Rate Trend
+    fig_hr = px.line(health_df, x="Timestamp", y="Heart Rate", title="Heart Rate Over Time",
+                     color="Device-ID/User-ID")
+    st.plotly_chart(fig_hr, use_container_width=True)
+
+    # Glucose Levels
+    fig_gl = px.bar(health_df, x="Device-ID/User-ID", y="Glucose Levels",
+                   title="Current Glucose Levels by User",
+                   color="Glucose Levels Below/Above Threshold (Yes/No)")
+    st.plotly_chart(fig_gl, use_container_width=True)
+
+# --- SAFETY TAB --- #
+with tabs[1]:
+    st.subheader("Fall & Inactivity Alerts")
+    st.dataframe(safety_df.head())
+
+    fall_counts = safety_df["Fall Detected (Yes/No)"].value_counts().reset_index()
+    fall_counts.columns = ["Fall Detected", "Count"]
+    fig_falls = px.pie(fall_counts, names="Fall Detected", values="Count", title="Fall Detection Summary")
+    st.plotly_chart(fig_falls, use_container_width=True)
+
+    location_chart = px.histogram(safety_df, x="Location", color="Fall Detected (Yes/No)",
+                                  title="Fall Events by Location")
+    st.plotly_chart(location_chart, use_container_width=True)
+
+# --- REMINDERS TAB --- #
+with tabs[2]:
+    st.subheader("Reminder Compliance")
+    st.dataframe(reminder_df.head())
+
+    reminder_types = reminder_df["Reminder Type"].value_counts().reset_index()
+    reminder_types.columns = ["Reminder Type", "Count"]
+    fig_reminders = px.bar(reminder_types, x="Reminder Type", y="Count", title="Reminder Types Frequency",
+                           color="Reminder Type")
+    st.plotly_chart(fig_reminders, use_container_width=True)
+
+    ack_chart = reminder_df["Acknowledged (Yes/No)"].value_counts().reset_index()
+    ack_chart.columns = ["Acknowledged", "Count"]
+    fig_ack = px.pie(ack_chart, names="Acknowledged", values="Count", title="Acknowledgement Status")
+    st.plotly_chart(fig_ack, use_container_width=True)
+
+```
 
 # Sample Dashboard
 
